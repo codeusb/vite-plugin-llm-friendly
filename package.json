@@ -1,26 +1,54 @@
 {
   "name": "vite-plugin-llm-friendly",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
+  "description": "Make your Vite site LLM-friendly with Markdown content negotiation and llms.txt support",
+  "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
     "prepublishOnly": "npm run build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "llm",
+    "llms-txt",
+    "markdown",
+    "ai",
+    "seo",
+    "content-negotiation"
+  ],
+  "author": "codeusb",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codeusb/vite-plugin-llm-friendly"
+  },
+  "homepage": "https://github.com/codeusb/vite-plugin-llm-friendly#readme",
+  "bugs": {
+    "url": "https://github.com/codeusb/vite-plugin-llm-friendly/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "packageManager": "pnpm@10.32.1",
+  "peerDependencies": {
+    "vite": ">=5.0.0"
+  },
   "devDependencies": {
     "@types/node": "^25.6.0",
     "tsup": "^8.5.1",
