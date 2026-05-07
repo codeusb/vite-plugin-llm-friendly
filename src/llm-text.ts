@@ -93,7 +93,14 @@ function handleLLMRequest(
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
       res.setHeader("Content-Type", "text/plain; charset=utf-8");
       res.setHeader("Vary", "Accept");
-      fs.createReadStream(filePath).pipe(res);
+      const stream = fs.createReadStream(filePath);
+      stream.on("error", () => {
+        if (!res.headersSent) {
+          res.statusCode = 500;
+          res.end("Internal Server Error");
+        }
+      });
+      stream.pipe(res);
       return;
     }
   }

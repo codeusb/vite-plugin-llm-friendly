@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-llm-friendly",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Make your Vite site LLM-friendly with Markdown content negotiation and llms.txt support",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -20,6 +20,7 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
+    "test": "pnpm run build && node --test tests/*.test.cjs",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

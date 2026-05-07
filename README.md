@@ -80,7 +80,7 @@ Use `curl` to simulate an AI request:
 curl -H "Accept: text/markdown" http://localhost:5173/about
 
 # Verify llms.txt index
-curl http://localhost:5173/llms
+curl http://localhost:5173/llms.txt
 ```
 
 ## 💡 Why do you need it?

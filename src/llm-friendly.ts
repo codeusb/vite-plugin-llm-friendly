@@ -66,9 +66,23 @@ function handleRequest(
     relativePath === "/" || relativePath === ""
       ? "/index"
       : relativePath.replace(/\.html$/, "");
-  const mdRelativePath = `${cleanPath}.md`;
+  const normalizedPath = path.posix.normalize(
+    cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`,
+  );
+  if (
+    normalizedPath === "/.." ||
+    normalizedPath.startsWith("/../") ||
+    normalizedPath.includes("\0")
+  ) {
+    return next();
+  }
+  const mdRelativePath = `${normalizedPath}.md`;
 
-  const mdFilePath = path.join(config.root, mdDir, mdRelativePath);
+  const mdBaseDir = path.resolve(config.root, mdDir);
+  const mdFilePath = path.resolve(mdBaseDir, `.${mdRelativePath}`);
+  if (mdFilePath !== mdBaseDir && !mdFilePath.startsWith(`${mdBaseDir}${path.sep}`)) {
+    return next();
+  }
 
   // Only set Link/Vary headers when the corresponding .md file exists
   let mdFileExists = false;
@@ -81,7 +95,7 @@ function handleRequest(
   if (!mdFileExists) return next();
 
   const mdUrl = path.posix.join(basePath, mdRelativePath);
-  res.setHeader("Link", `<${mdUrl}>; rel="alternate"; type="text/markdown"`);
+  appendLinkHeader(res, `<${mdUrl}>; rel="alternate"; type="text/markdown"`);
   appendVaryHeader(res, "Accept");
 
   const accept = req.headers.accept || "";
@@ -99,6 +113,24 @@ function handleRequest(
   }
 
   next();
+}
+
+function appendLinkHeader(res: any, value: string) {
+  const existing = res.getHeader("Link");
+  if (!existing) {
+    res.setHeader("Link", value);
+    return;
+  }
+
+  const parts = Array.isArray(existing)
+    ? existing.flatMap((entry) => String(entry).split(",").map((s) => s.trim()))
+    : String(existing)
+        .split(",")
+        .map((s) => s.trim());
+
+  if (!parts.includes(value)) {
+    res.setHeader("Link", [...parts, value].join(", "));
+  }
 }
 
 function appendVaryHeader(res: any, value: string) {
